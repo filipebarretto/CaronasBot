@@ -79,21 +79,23 @@
 
 						TelegramConnect::sendMessage($chat_id, $regras);
 						break;
-					
+
 					case 'help':
 						$help = "Utilize este Bot para agendar as caronas. A utilização é super simples e através de comandos:
 
 								/ida [horario] [vagas] [local] --> Este comando serve para definir um horário que você está INDO para o FUNDÃO. Ex: /ida 10:00 2 jardim
 								Caso não seja colocado o parâmetro do horário (Ex: /ida) o bot irá apresentar a lista com as caronas registradas para o trajeto.
+								Caso você já tenha oferecido uma carona no horário colocado, a carona será atualizada.
 
 								/volta [horario] [vagas] [local] --> Este comando serve para definir um horário que você está VOLTANDO para o SEU BAIRRO. Ex: /volta 15:00 3 jardim
 								Caso não seja colocado o parâmetro do horário (Ex: /volta) o bot irá apresentar a lista com as caronas registradas para o trajeto.
+								Caso você já tenha oferecido uma carona no horário colocado, a carona será atualizada.
 
-								/remover [ida/volta] --> Comando utilizado para remover a carona da lista. SEMPRE REMOVA a carona depois dela ter sido realizada. O sistema não faz isso automaticamente. Ex: /remover ida";
-						
+								/remover [ida/volta] --> Comando utilizado para remover as caronase da lista. SEMPRE REMOVA a carona depois dela ter sido realizada. O sistema não faz isso automaticamente. Ex: /remover ida";
+
 						TelegramConnect::sendMessage($chat_id, $help);
 						break;
-						
+
 					case 'teste':
 						error_log("teste");
 						$texto = "Versão 1.0 - ChatId: $chat_id";
@@ -141,7 +143,11 @@
 								$minuto = isset($resultado['minuto']) ? $resultado['minuto'] : "00";
 
 								$travel_hour = $hora . ":" . $minuto;
-				
+
+								if ( $dao->existsIda( $chat_id, $user_id, $travel_hour ) ) {
+									$dao->removerIda( $chat_id, $user_id, $travel_hour )
+								}
+
 								$dao->adicionarIda($chat_id, $user_id, $username, $travel_hour, $spots, $location);
 
 								TelegramConnect::sendMessage($chat_id, "@" . $username . " oferece carona de ida às " . $travel_hour . " com " . $spots . " vagas saindo de " . $location);
@@ -178,6 +184,10 @@
 								$minuto = isset($resultado['minuto']) ? $resultado['minuto'] : "00";
 
 								$travel_hour = $hora . ":" . $minuto;
+
+								if ( $dao->existsVolta( $chat_id, $user_id, $travel_hour ) ) {
+									$dao->removerVolta( $chat_id, $user_id, $travel_hour )
+								}
 
 								$dao->adicionarVolta($chat_id, $user_id, $username, $travel_hour, $spots, $location);
 
