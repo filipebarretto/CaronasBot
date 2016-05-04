@@ -141,7 +141,11 @@
 								$minuto = isset($resultado['minuto']) ? $resultado['minuto'] : "00";
 
 								$travel_hour = $hora . ":" . $minuto;
-				
+
+								if ( $dao->existsIda( $chat_id, $user_id, $travel_hour ) ) {
+									$dao->removerIda( $chat_id, $user_id, $travel_hour )
+								}
+
 								$dao->adicionarIda($chat_id, $user_id, $username, $travel_hour, $spots, $location);
 
 								TelegramConnect::sendMessage($chat_id, "@" . $username . " oferece carona de ida às " . $travel_hour . " com " . $spots . " vagas saindo de " . $location);
@@ -178,6 +182,10 @@
 								$minuto = isset($resultado['minuto']) ? $resultado['minuto'] : "00";
 
 								$travel_hour = $hora . ":" . $minuto;
+
+								if ( $dao->existsVolta( $chat_id, $user_id, $travel_hour ) ) {
+									$dao->removerVolta( $chat_id, $user_id, $travel_hour )
+								}
 
 								$dao->adicionarVolta($chat_id, $user_id, $username, $travel_hour, $spots, $location);
 
