@@ -73,19 +73,25 @@
 			$this->db->execute();
 			error_log("Erro: " . $this->db->getError());
 		}
-		
-		public function removerIda($chat_id, $user_id){
-			$this->db->query(CaronaDAO::REMOVE_QUERY_IDA);
+
+		public function removerIda($chat_id, $user_id, $travel_hour = null){
+			if ( $travel_hour === null ) {
+				$this->db->query(CaronaDAO::REMOVE_QUERY_IDA);
+			}	else {
+				$this->db->query(CaronaDAO::REMOVE_UMA_QUERY_IDA);
+				$this->db->bind( ":travel_hour", $travel_hour );
+			}
+
 			$this->db->bind(":chat_id", $chat_id);
 			$this->db->bind(":user_id", $user_id);
-			
+
 			$this->db->execute();
 			error_log("Erro: " . $this->db->getError());
 		}
-		
+
 		public function adicionarVolta($chat_id, $user_id, $username, $travel_hour, $spots, $location){
 			$travel_hour = $this->acertarStringHora($travel_hour);
-			
+
 			$this->db->query(CaronaDAO::INSERT_QUERY_VOLTA);
 			$this->db->bind(":chat_id", $chat_id);
 			$this->db->bind(":user_id", $user_id);
@@ -93,37 +99,42 @@
 			$this->db->bind(":travel_hour", $travel_hour);
 			$this->db->bind(":spots", $spots);
 			$this->db->bind(":location", $location);
-						
+
 			$this->db->execute();
 			error_log("Erro: " . $this->db->getError());
 		}
-		
-		public function removerVolta($chat_id, $user_id){
-			$this->db->query(CaronaDAO::REMOVE_QUERY_VOLTA);
+
+		public function removerVolta($chat_id, $user_id, $travel_hour = null ){
+			if ( $travel_hour === null ) {
+				$this->db->query(CaronaDAO::REMOVE_QUERY_VOLTA);
+			} else {
+				$this->db->query(CaronaDAO::REMOVE_UMA_QUERY_VOLTA);
+				$this->db->bind( ":travel_hour", $travel_hour );
+			}
 			$this->db->bind(":chat_id", $chat_id);
 			$this->db->bind(":user_id", $user_id);
-			
+
 			$this->db->execute();
 			error_log("Erro: " . $this->db->getError());
 		}
-		
+
 		private function acertarStringHora($travel_hour){
 			return $travel_hour .= ":00";
 		}
-		
+
 		private function montaListaCaronas($resultSet){
 
 			error_log("montaListaCaronas");
 
 			$resultado = array();
-			
+
 			foreach ($resultSet as $entrada)
 			{
 				array_push($resultado, new Carona($entrada));
 			}
-			
+
 			return $resultado;
 		}
     }
 
-    
+
