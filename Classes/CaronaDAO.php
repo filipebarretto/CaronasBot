@@ -1,4 +1,4 @@
-<?php 
+<?php
 	require_once "Connection.php";
 	require_once "Carona.php";
 
@@ -6,15 +6,23 @@
 
 		const INSERT_QUERY_IDA = "insert into public.caroneiros (chat_id, user_id, username, travel_hour, spots, location, route) values (:chat_id, :user_id, :username, :travel_hour, :spots, :location, '0'::bit(1))";
 		const INSERT_QUERY_VOLTA = "insert into public.caroneiros (chat_id, user_id, username, travel_hour, spots, location, route) values (:chat_id, :user_id, :username, :travel_hour, :spots, :location, '1'::bit(1))";
-		
+
 		const LISTA_QUERY_IDA = "select * from public.caroneiros where chat_id = :chat_id and route = '0'::bit(1) ORDER BY travel_hour ASC;";
 		const LISTA_QUERY_VOLTA = "select * from public.caroneiros where chat_id = :chat_id and route = '1'::bit(1) ORDER BY travel_hour ASC;";
-	
+
+		const LISTA_UMA_QUERY_IDA = "select * from public.caroneiros where chat_id = :chat_id and
+		route = '0'::bit(1) and travel_hour = :travel_hour and user_id = :user_id;";
+		const LISTA_UMA_QUERY_VOLTA = "select * from public.caroneiros where chat_id = :chat_id and
+		route = '1'::bit(1) and travel_hour = :travel_hour and user_id = :user_id;";
+
 		const REMOVE_QUERY_IDA = "delete from public.caroneiros where chat_id = :chat_id and user_id = :user_id and route = '0'::bit(1)";
 		const REMOVE_QUERY_VOLTA = "delete from public.caroneiros where chat_id = :chat_id and user_id = :user_id and route = '1'::bit(1)";
-	
-        private $db;	
-		
+
+		const REMOVE_UMA_QUERY_IDA = "delete from public.caroneiros where chat_id = :chat_id and user_id = :user_id and travel_hour = :travel_hour and route = '0'::bit(1)";
+		const REMOVE_UMA_QUERY_VOLTA = "delete from public.caroneiros where chat_id = :chat_id and user_id = :user_id and travel_hour = :travel_hour and route = '1'::bit(1)";
+
+        private $db;
+
         public function __construct(){
             $this->db = new Database();
         }
