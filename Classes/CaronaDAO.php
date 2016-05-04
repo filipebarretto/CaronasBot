@@ -30,20 +30,38 @@
 		public function getListaIda($chat_id){
 			$this->db->query(CaronaDAO::LISTA_QUERY_IDA);
 			$this->db->bind(":chat_id", $chat_id);
-			
+
 			return $this->montaListaCaronas($this->db->resultSet());
 		}
-		
+
 		public function getListaVolta($chat_id){
 			$this->db->query(CaronaDAO::LISTA_QUERY_VOLTA);
 			$this->db->bind(":chat_id", $chat_id);
-			
+
 			return $this->montaListaCaronas($this->db->resultSet());
 		}
-				
+
+		public function existsIda( $chat_id, $user_id, $travel_hour ) {
+			$this->db->query(CaronaDAO::LISTA_UMA_QUERY_IDA);
+			$this->db->bind(":chat_id", $chat_id);
+			$this->db->bind(":user_id", $user_id);
+			$this->db->bind(":travel_hour", $travel_hour);
+
+			return boolval( count( $this->db->resultSet() ) );
+		}
+
+		public function existsVolta( $chat_id, $user_id, $travel_hour ) {
+			$this->db->query(CaronaDAO::LISTA_UMA_QUERY_VOLTA);
+			$this->db->bind(":chat_id", $chat_id);
+			$this->db->bind(":user_id", $user_id);
+			$this->db->bind(":travel_hour", $travel_hour);
+
+			return boolval( count( $this->db->resultSet() ) );
+		}
+
 		public function adicionarIda($chat_id, $user_id, $username, $travel_hour, $spots, $location){
 			$travel_hour = $this->acertarStringHora($travel_hour);
-			
+
 			$this->db->query(CaronaDAO::INSERT_QUERY_IDA);
 			$this->db->bind(":chat_id", $chat_id);
 			$this->db->bind(":user_id", $user_id);
